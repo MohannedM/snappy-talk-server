@@ -1,0 +1,5 @@
+node_modules
+env.ts
+env.js
+./src/env.ts
+./dist/env.js
