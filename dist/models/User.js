@@ -1,15 +1,7 @@
-import { model, Schema, Document } from 'mongoose';
-import Post, { PostDocument } from './Post';
-export interface UserDocument extends Document {
-    firstName: string;
-    lastName: string;
-    email: string;
-    password: string;
-    postsCreated?: PostDocument[];
-    postsLiked?: PostDocument[];
-}
-
-const userSchema = new Schema({
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const mongoose_1 = require("mongoose");
+const userSchema = new mongoose_1.Schema({
     firstName: {
         required: true,
         type: String,
@@ -30,18 +22,17 @@ const userSchema = new Schema({
     },
     postsCreated: [
         {
-            type: Schema.Types.ObjectId,
+            type: mongoose_1.Schema.Types.ObjectId,
             required: true,
             ref: 'Post',
         },
     ],
     postsLiked: [
         {
-            type: Schema.Types.ObjectId,
+            type: mongoose_1.Schema.Types.ObjectId,
             required: true,
             ref: 'Post',
         },
     ],
 });
-
-export default model<UserDocument>('User', userSchema);
+exports.default = mongoose_1.model('User', userSchema);

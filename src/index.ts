@@ -2,12 +2,14 @@ import express, { Request, Response, NextFunction } from 'express';
 import { json } from 'body-parser';
 import { connect } from 'mongoose';
 import * as envVariables from './env';
-import typeDefs from './graphql/schema';
+import graphqlSchema from './graphql/schema';
+import graphqlHttp from 'express-graphql';
 import resolvers from './graphql/resolvers';
-import { ApolloServer } from 'apollo-server-express';
+import auth from './middlewares/auth';
+import 'express-graphql';
+import { CustomError } from './helpers/types.module';
 
 const app = express();
-const apolloServer = new ApolloServer({ resolvers, typeDefs });
 
 app.use(json());
 
@@ -17,13 +19,27 @@ app.use((req: Request, res: Response, next: NextFunction) => {
     res.setHeader('Allow-Access-Control-Headers', 'Content-Type, Authorization');
 
     if (req.method === 'OPTIONS') {
-        res.status(200);
+        res.sendStatus(200);
     }
 
     next();
 });
 
-apolloServer.applyMiddleware({ app, path: '/graphql' });
+app.use('*', auth);
+app.use(
+    '/graphql',
+    graphqlHttp({
+        schema: graphqlSchema,
+        rootValue: resolvers,
+        graphiql: true,
+        customFormatErrorFn(err) {
+            if (!err.originalError) {
+                return err;
+            }
+            return { message: err.message, data: err.originalError };
+        },
+    }),
+);
 
 connect(envVariables.dbConnection)
     .then(() => {
