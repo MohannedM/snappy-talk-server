@@ -26,7 +26,7 @@ exports.register = async ({ userInput }, _req) => {
         }
         const userExist = await User_1.default.findOne({ email: userInput.email });
         if (userExist) {
-            errors.push({ message: 'Email already exists' });
+            errors.push({ message: 'Email already exists!' });
         }
         if (errors.length > 0) {
             const error = new types_module_1.CustomError('Invalid Input.');
@@ -69,11 +69,15 @@ exports.login = async ({ userInput }, _req) => {
         }
         const user = await User_1.default.findOne({ email: userInput.email });
         if (!user) {
-            errors.push({ message: 'Email or password is incorrect' });
+            errors.push({ message: 'Email or password is incorrect!' });
+            const error = new types_module_1.CustomError('Invalid Input.');
+            error.data = errors;
+            error.code = 422;
+            throw error;
         }
         const isPassword = await bcryptjs_1.default.compare(userInput.password, user.password);
         if (!isPassword) {
-            errors.push({ message: 'Email or password is incorrect' });
+            errors.push({ message: 'Email or password is incorrect!' });
         }
         if (errors.length > 0) {
             const error = new types_module_1.CustomError('Invalid Input.');

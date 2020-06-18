@@ -58,7 +58,7 @@ export const register: (args: registerArgs, req: authRequest) => Promise<UserDat
 
         const userExist = await User.findOne({ email: userInput.email });
         if (userExist) {
-            errors.push({ message: 'Email already exists' });
+            errors.push({ message: 'Email already exists!' });
         }
 
         if (errors.length > 0) {
@@ -113,13 +113,17 @@ export const login: (args: loginArgs, req: authRequest) => Promise<UserData | un
 
         const user = await User.findOne({ email: userInput.email });
         if (!user) {
-            errors.push({ message: 'Email or password is incorrect' });
+            errors.push({ message: 'Email or password is incorrect!' });
+            const error = new CustomError('Invalid Input.');
+            error.data = errors;
+            error.code = 422;
+            throw error;
         }
 
         const isPassword = await bcryptjs.compare(userInput.password, user!.password);
 
         if (!isPassword) {
-            errors.push({ message: 'Email or password is incorrect' });
+            errors.push({ message: 'Email or password is incorrect!' });
         }
 
         if (errors.length > 0) {
