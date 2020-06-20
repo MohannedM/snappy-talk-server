@@ -15,6 +15,12 @@ exports.default = graphql_1.buildSchema(`
         password: String!
     }
 
+    input PostInputType{
+        title: String!
+        description: String!
+        imageUrl: String!
+    }
+
     type Post{
         _id: String!
         title: String!
@@ -37,12 +43,13 @@ exports.default = graphql_1.buildSchema(`
     }
 
     type RootQuery{
-        hello: String!
+        getPosts: [Post!]!
     }
 
     type RootMutation{
-        register(userInput: RegisterInputData): User
-        login(userInput: LoginInputData): User
+        register(userInput: RegisterInputData): User!
+        login(userInput: LoginInputData): User!
+        createPost(postInput: PostInputType): Post!
     }
 
     schema{

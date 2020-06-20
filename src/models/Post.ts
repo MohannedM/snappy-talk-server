@@ -5,7 +5,9 @@ export interface PostDocument extends Document {
     description: string;
     imageUrl: string;
     user: UserDocument;
-    likes?: UserDocument[];
+    likers?: UserDocument[];
+    createdAt: Date;
+    updatedAt: Date;
 }
 
 const postSchema = new Schema(

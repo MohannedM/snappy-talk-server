@@ -13,6 +13,12 @@ export default buildSchema(`
         password: String!
     }
 
+    input PostInputType{
+        title: String!
+        description: String!
+        imageUrl: String!
+    }
+
     type Post{
         _id: String!
         title: String!
@@ -35,12 +41,14 @@ export default buildSchema(`
     }
 
     type RootQuery{
-        hello: String!
+        getAllPosts: [Post!]!
+        getUserPosts: [Post!]!
     }
 
     type RootMutation{
-        register(userInput: RegisterInputData): User
-        login(userInput: LoginInputData): User
+        register(userInput: RegisterInputData): User!
+        login(userInput: LoginInputData): User!
+        createPost(postInput: PostInputType): Post!
     }
 
     schema{

@@ -20,12 +20,8 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const userResolvers = __importStar(require("./service/users"));
+const postsResolvers = __importStar(require("./service/posts"));
 exports.default = {
     ...userResolvers,
-    hello() {
-        return {
-            id: 'ssss',
-            greet: 'Hello',
-        };
-    },
+    ...postsResolvers,
 };

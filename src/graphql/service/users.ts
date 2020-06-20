@@ -1,39 +1,9 @@
 import User from '../../models/User';
-import Post from '../../models/Post';
 import jwt from 'jsonwebtoken';
 import { authRequest, CustomError } from '../../helpers/types.module';
 import validator from 'validator';
 import bcryptjs from 'bcryptjs';
-
-interface RegisterInputData {
-    firstName: string;
-    lastName: string;
-    email: string;
-    password: string;
-}
-
-interface LoginInputData {
-    email: string;
-    password: string;
-}
-
-interface UserData {
-    _id: string;
-    firstName: string;
-    lastName: string;
-    email: string;
-    token: string;
-    postsCreated?: [];
-    postsLiked?: [];
-}
-
-interface registerArgs {
-    userInput: RegisterInputData;
-}
-
-interface loginArgs {
-    userInput: LoginInputData;
-}
+import { registerArgs, UserData, loginArgs } from './types.modules';
 
 export const register: (args: registerArgs, req: authRequest) => Promise<UserData | undefined> = async (
     { userInput },

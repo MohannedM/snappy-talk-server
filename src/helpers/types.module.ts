@@ -15,6 +15,6 @@ export class CustomError extends GraphQLError {
     public data!: any[];
 
     constructor(message: string) {
-        super(message, undefined, undefined, undefined, undefined, undefined);
+        super(message);
     }
 }

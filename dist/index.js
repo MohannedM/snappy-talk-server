@@ -31,7 +31,11 @@ const express_graphql_1 = __importDefault(require("express-graphql"));
 const resolvers_1 = __importDefault(require("./graphql/resolvers"));
 const auth_1 = __importDefault(require("./middlewares/auth"));
 require("express-graphql");
+const path_1 = __importDefault(require("path"));
+const multer_1 = __importDefault(require("multer"));
+const uuid_1 = __importDefault(require("uuid"));
 const app = express_1.default();
+app.use('/images', express_1.default.static(path_1.default.join(__dirname, 'images')));
 app.use(body_parser_1.json());
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -43,6 +47,40 @@ app.use((req, res, next) => {
     next();
 });
 app.use('*', auth_1.default);
+const storage = multer_1.default.diskStorage({
+    destination(req, file, cb) {
+        cb(null, 'images');
+    },
+    filename(req, file, cb) {
+        cb(null, uuid_1.default.v4());
+    },
+});
+const fileFilter = (req, file, cb) => {
+    if (!req.isAuth)
+        return cb(null, false);
+    if (file.mimeType === 'image/png' || file.mimeType === 'image/jpg' || file.mimeType === 'image/jpeg') {
+        cb(null, true);
+    }
+    else {
+        cb(null, false);
+    }
+};
+app.use(multer_1.default({ storage, fileFilter }).single('image'));
+app.put('/api/add-image', (req, res, next) => {
+    if (!req.isAuth) {
+        res.status(401).json({ message: 'Unauthorized' });
+        return;
+    }
+    if (req.file) {
+        const imageUrl = req.file.path.replace('\\', '/');
+        imageUrl ? res.status(201).json({ imageUrl }) : res.status(400).json({ error: 'Image upload failed' });
+        return;
+    }
+    else if (!req.file) {
+        res.status(200).json({ imageUrl: '' });
+        return;
+    }
+});
 app.use('/graphql', express_graphql_1.default({
     schema: schema_1.default,
     rootValue: resolvers_1.default,
