@@ -33,7 +33,6 @@ const auth_1 = __importDefault(require("./middlewares/auth"));
 require("express-graphql");
 const path_1 = __importDefault(require("path"));
 const multer_1 = __importDefault(require("multer"));
-const uuid_1 = __importDefault(require("uuid"));
 const app = express_1.default();
 app.use('/images', express_1.default.static(path_1.default.join(__dirname, 'images')));
 app.use(body_parser_1.json());
@@ -52,7 +51,7 @@ const storage = multer_1.default.diskStorage({
         cb(null, 'images');
     },
     filename(req, file, cb) {
-        cb(null, uuid_1.default.v4());
+        cb(null, new Date().toISOString() + '_' + file.originalname);
     },
 });
 const fileFilter = (req, file, cb) => {
@@ -67,6 +66,8 @@ const fileFilter = (req, file, cb) => {
 };
 app.use(multer_1.default({ storage, fileFilter }).single('image'));
 app.put('/api/add-image', (req, res, next) => {
+    console.log(req.body);
+    console.log(req.file);
     if (!req.isAuth) {
         res.status(401).json({ message: 'Unauthorized' });
         return;

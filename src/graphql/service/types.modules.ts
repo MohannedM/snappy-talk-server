@@ -42,3 +42,7 @@ export interface createPostArgs {
         imageUrl: string;
     };
 }
+
+export interface deletePostArgs {
+    postId: string;
+}

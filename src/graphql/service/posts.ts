@@ -1,8 +1,10 @@
 import Post from '../../models/Post';
-import { PostData, createPostArgs } from './types.modules';
+import { PostData, createPostArgs, deletePostArgs } from './types.modules';
 import { authRequest, CustomError } from '../../helpers/types.module';
 import validator from 'validator';
 import User from '../../models/User';
+import fs from 'fs';
+import path from 'path';
 
 export const createPost: (args: createPostArgs, req: authRequest) => Promise<PostData | undefined> = async (
     { postInput },
@@ -131,6 +133,26 @@ export const getUserPosts: (args: any, req: authRequest) => Promise<PostData[] |
                 }),
             };
         });
+    } catch (err) {
+        throw err;
+    }
+};
+
+export const deletePost: (args: deletePostArgs, req: authRequest) => Promise<boolean | undefined> = async (
+    { postId },
+    req,
+) => {
+    try {
+        const user = await User.findById(req.userId);
+        const post = await Post.findById(postId).populate('user');
+        if (!user || !req.isAuth || !post || post?.user._id !== req.userId) {
+            const error = new CustomError('Unauthorized');
+            error.code = 401;
+            throw error;
+        }
+        fs.unlinkSync(path.join(__dirname, '..', '..', post?.imageUrl));
+        await Post.findByIdAndDelete(postId);
+        return true;
     } catch (err) {
         throw err;
     }

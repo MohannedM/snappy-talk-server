@@ -49,6 +49,7 @@ export default buildSchema(`
         register(userInput: RegisterInputData): User!
         login(userInput: LoginInputData): User!
         createPost(postInput: PostInputType): Post!
+        deletePost(postId: String!): Boolean
     }
 
     schema{

@@ -43,13 +43,15 @@ exports.default = graphql_1.buildSchema(`
     }
 
     type RootQuery{
-        getPosts: [Post!]!
+        getAllPosts: [Post!]!
+        getUserPosts: [Post!]!
     }
 
     type RootMutation{
         register(userInput: RegisterInputData): User!
         login(userInput: LoginInputData): User!
         createPost(postInput: PostInputType): Post!
+        deletePost(postId: String!): Boolean
     }
 
     schema{
