@@ -63,7 +63,7 @@ exports.createPost = async ({ postInput }, req) => {
         throw err;
     }
 };
-exports.getAllPosts = async (args, req) => {
+exports.getAllPosts = async (_, req) => {
     try {
         const user = await User_1.default.findById(req.userId);
         if (!user || !req.isAuth) {
@@ -102,9 +102,9 @@ exports.getAllPosts = async (args, req) => {
         throw err;
     }
 };
-exports.getUserPosts = async (args, req) => {
+exports.getUserPosts = async (_, req) => {
     try {
-        const user = await User_1.default.findById(req.userId).populate('posts.likers').populate('posts');
+        const user = await User_1.default.findById(req.userId).populate('posts.likers').populate('postsCreated');
         if (!user || !req.isAuth) {
             const error = new types_module_1.CustomError('Unauthorized');
             error.code = 401;

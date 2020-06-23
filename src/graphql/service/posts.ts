@@ -63,7 +63,7 @@ export const createPost: (args: createPostArgs, req: authRequest) => Promise<Pos
     }
 };
 
-export const getAllPosts: (args: any, req: authRequest) => Promise<PostData[] | undefined> = async (args, req) => {
+export const getAllPosts: (args: any, req: authRequest) => Promise<PostData[] | undefined> = async (_, req) => {
     try {
         const user = await User.findById(req.userId);
         if (!user || !req.isAuth) {
@@ -101,9 +101,9 @@ export const getAllPosts: (args: any, req: authRequest) => Promise<PostData[] | 
     }
 };
 
-export const getUserPosts: (args: any, req: authRequest) => Promise<PostData[] | undefined> = async (args, req) => {
+export const getUserPosts: (args: any, req: authRequest) => Promise<PostData[] | undefined> = async (_, req) => {
     try {
-        const user = await User.findById(req.userId).populate('posts.likers').populate('posts');
+        const user = await User.findById(req.userId).populate('posts.likers').populate('postsCreated');
         if (!user || !req.isAuth) {
             const error = new CustomError('Unauthorized');
             error.code = 401;
