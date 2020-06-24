@@ -82,14 +82,14 @@ exports.getAllPosts = async (_, req) => {
                 createdAt: post.createdAt.toISOString(),
                 updatedAt: post.updatedAt.toISOString(),
                 user: {
-                    _id: post.user._id.toString,
+                    _id: post.user._id.toString(),
                     firstName: post.user.firstName,
                     lastName: post.user.lastName,
                     email: post.user.email,
                 },
                 likers: (_a = post.likers) === null || _a === void 0 ? void 0 : _a.map((user) => {
                     return {
-                        _id: user._id,
+                        _id: user._id.toString(),
                         firstName: post.user.firstName,
                         lastName: post.user.lastName,
                         email: post.user.email,
@@ -120,14 +120,14 @@ exports.getUserPosts = async (_, req) => {
                 createdAt: post.createdAt.toISOString(),
                 updatedAt: post.updatedAt.toISOString(),
                 user: {
-                    _id: post.user._id.toString,
-                    firstName: post.user.firstName,
-                    lastName: post.user.lastName,
-                    email: post.user.email,
+                    _id: user._id.toString(),
+                    firstName: user.firstName,
+                    lastName: user.lastName,
+                    email: user.email,
                 },
                 likers: (_a = post.likers) === null || _a === void 0 ? void 0 : _a.map((user) => {
                     return {
-                        _id: user._id,
+                        _id: user._id.toString(),
                         firstName: post.user.firstName,
                         lastName: post.user.lastName,
                         email: post.user.email,

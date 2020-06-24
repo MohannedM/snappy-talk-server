@@ -72,6 +72,7 @@ export const getAllPosts: (args: any, req: authRequest) => Promise<PostData[] | 
             throw error;
         }
         const posts = await Post.find().populate('user').populate('likers');
+
         return posts.map((post) => {
             return {
                 _id: post._id.toString(),
@@ -81,14 +82,14 @@ export const getAllPosts: (args: any, req: authRequest) => Promise<PostData[] | 
                 createdAt: post.createdAt.toISOString(),
                 updatedAt: post.updatedAt.toISOString(),
                 user: {
-                    _id: post.user._id.toString,
+                    _id: post.user._id.toString(),
                     firstName: post.user.firstName,
                     lastName: post.user.lastName,
                     email: post.user.email,
                 },
                 likers: post.likers?.map((user) => {
                     return {
-                        _id: user._id,
+                        _id: user._id.toString(),
                         firstName: post.user.firstName,
                         lastName: post.user.lastName,
                         email: post.user.email,
@@ -118,14 +119,14 @@ export const getUserPosts: (args: any, req: authRequest) => Promise<PostData[] |
                 createdAt: post.createdAt.toISOString(),
                 updatedAt: post.updatedAt.toISOString(),
                 user: {
-                    _id: post.user._id.toString,
-                    firstName: post.user.firstName,
-                    lastName: post.user.lastName,
-                    email: post.user.email,
+                    _id: user._id.toString(),
+                    firstName: user.firstName,
+                    lastName: user.lastName,
+                    email: user.email,
                 },
                 likers: post.likers?.map((user) => {
                     return {
-                        _id: user._id,
+                        _id: user._id.toString(),
                         firstName: post.user.firstName,
                         lastName: post.user.lastName,
                         email: post.user.email,
