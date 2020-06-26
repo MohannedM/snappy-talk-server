@@ -1,5 +1,5 @@
 import Post from '../../models/Post';
-import { PostData, createPostArgs, deletePostArgs } from './types.modules';
+import { PostData, createPostArgs, deletePostArgs, updatePostArgs } from './types.modules';
 import { authRequest, CustomError } from '../../helpers/types.module';
 import validator from 'validator';
 import User from '../../models/User';
@@ -134,6 +134,62 @@ export const getUserPosts: (args: any, req: authRequest) => Promise<PostData[] |
                 }),
             };
         });
+    } catch (err) {
+        throw err;
+    }
+};
+
+export const updatePost: (args: updatePostArgs, req: authRequest) => Promise<PostData | undefined> = async (
+    { postInput },
+    req,
+) => {
+    try {
+        const user = await User.findById(req.userId);
+        const post = await Post.findById(postInput.postId).populate('user');
+        if (!user || !req.isAuth || !post || post?.user._id !== req.userId) {
+            const error = new CustomError('Unauthorized');
+            error.code = 401;
+            throw error;
+        }
+
+        const errors = [];
+
+        if (!validator.isLength(postInput.title, { min: 4, max: 25 })) {
+            errors.push({ message: 'Title should be from 4 to 25 characters!' });
+        }
+        if (!validator.isLength(postInput.description, { min: 10, max: 100 })) {
+            errors.push({ message: 'Description should be from 10 to 100 characters!' });
+        }
+        if (validator.isEmpty(postInput.imageUrl, { ignore_whitespace: true })) {
+            errors.push({ message: 'Image should not be empty!' });
+        }
+
+        if (errors.length > 0) {
+            const error = new CustomError('Invalid Input.');
+            error.data = errors;
+            error.code = 422;
+            throw error;
+        }
+
+        post.title = postInput.title;
+        post.description = postInput.description;
+        post.imageUrl = postInput.imageUrl;
+
+        await post.save();
+        return {
+            _id: post._id.toString(),
+            title: post.title,
+            description: post.description,
+            imageUrl: post.imageUrl,
+            user: {
+                _id: user._id.toString(),
+                firstName: user.firstName,
+                lastName: user.lastName,
+                email: user.email,
+            },
+            createdAt: post.createdAt.toISOString(),
+            updatedAt: post.updatedAt.toISOString(),
+        };
     } catch (err) {
         throw err;
     }

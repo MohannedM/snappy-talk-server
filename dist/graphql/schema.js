@@ -21,6 +21,13 @@ exports.default = graphql_1.buildSchema(`
         imageUrl: String!
     }
 
+    input PostUpdateInputType{
+        postId: String!
+        title: String!
+        description: String!
+        imageUrl: String!
+    }
+
     type Post{
         _id: String!
         title: String!
@@ -51,7 +58,8 @@ exports.default = graphql_1.buildSchema(`
         register(userInput: RegisterInputData): User!
         login(userInput: LoginInputData): User!
         createPost(postInput: PostInputType): Post!
-        deletePost(postId: String!): Boolean
+        updatePost(postInput: PostUpdateInputType): Post!
+        deletePost(postId: String!): Boolean!
     }
 
     schema{

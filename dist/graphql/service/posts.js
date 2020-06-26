@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deletePost = exports.getUserPosts = exports.getAllPosts = exports.createPost = void 0;
+exports.deletePost = exports.updatePost = exports.getUserPosts = exports.getAllPosts = exports.createPost = void 0;
 const Post_1 = __importDefault(require("../../models/Post"));
 const types_module_1 = require("../../helpers/types.module");
 const validator_1 = __importDefault(require("validator"));
@@ -135,6 +135,54 @@ exports.getUserPosts = async (_, req) => {
                 }),
             };
         });
+    }
+    catch (err) {
+        throw err;
+    }
+};
+exports.updatePost = async ({ postInput }, req) => {
+    try {
+        const user = await User_1.default.findById(req.userId);
+        const post = await Post_1.default.findById(postInput.postId).populate('user');
+        if (!user || !req.isAuth || !post || (post === null || post === void 0 ? void 0 : post.user._id) !== req.userId) {
+            const error = new types_module_1.CustomError('Unauthorized');
+            error.code = 401;
+            throw error;
+        }
+        const errors = [];
+        if (!validator_1.default.isLength(postInput.title, { min: 4, max: 25 })) {
+            errors.push({ message: 'Title should be from 4 to 25 characters!' });
+        }
+        if (!validator_1.default.isLength(postInput.description, { min: 10, max: 100 })) {
+            errors.push({ message: 'Description should be from 10 to 100 characters!' });
+        }
+        if (validator_1.default.isEmpty(postInput.imageUrl, { ignore_whitespace: true })) {
+            errors.push({ message: 'Image should not be empty!' });
+        }
+        if (errors.length > 0) {
+            const error = new types_module_1.CustomError('Invalid Input.');
+            error.data = errors;
+            error.code = 422;
+            throw error;
+        }
+        post.title = postInput.title;
+        post.description = postInput.description;
+        post.imageUrl = postInput.imageUrl;
+        await post.save();
+        return {
+            _id: post._id.toString(),
+            title: post.title,
+            description: post.description,
+            imageUrl: post.imageUrl,
+            user: {
+                _id: user._id.toString(),
+                firstName: user.firstName,
+                lastName: user.lastName,
+                email: user.email,
+            },
+            createdAt: post.createdAt.toISOString(),
+            updatedAt: post.updatedAt.toISOString(),
+        };
     }
     catch (err) {
         throw err;

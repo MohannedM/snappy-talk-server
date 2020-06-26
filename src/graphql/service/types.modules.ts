@@ -43,6 +43,15 @@ export interface createPostArgs {
     };
 }
 
+export interface updatePostArgs {
+    postInput: {
+        postId: string;
+        title: string;
+        description: string;
+        imageUrl: string;
+    };
+}
+
 export interface deletePostArgs {
     postId: string;
 }
