@@ -52,6 +52,6 @@ export interface updatePostArgs {
     };
 }
 
-export interface deletePostArgs {
+export interface postIdArgs {
     postId: string;
 }

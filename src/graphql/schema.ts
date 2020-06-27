@@ -33,6 +33,7 @@ export default buildSchema(`
         imageUrl: String!
         user: User!
         likers: [User]!
+        isLiked: Boolean!
         createdAt: String!
         updatedAt: String!
     }
@@ -58,6 +59,8 @@ export default buildSchema(`
         createPost(postInput: PostInputType): Post!
         updatePost(postInput: PostUpdateInputType): Post!
         deletePost(postId: String!): Boolean!
+        likePost(postId: String!): Boolean!
+        dislikePost(postId: String!): Boolean!
     }
 
     schema{

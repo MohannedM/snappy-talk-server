@@ -35,6 +35,7 @@ exports.default = graphql_1.buildSchema(`
         imageUrl: String!
         user: User!
         likers: [User]!
+        isLiked: Boolean!
         createdAt: String!
         updatedAt: String!
     }
@@ -60,6 +61,8 @@ exports.default = graphql_1.buildSchema(`
         createPost(postInput: PostInputType): Post!
         updatePost(postInput: PostUpdateInputType): Post!
         deletePost(postId: String!): Boolean!
+        likePost(postId: String!): Boolean!
+        dislikePost(postId: String!): Boolean!
     }
 
     schema{
