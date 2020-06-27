@@ -233,7 +233,7 @@ export const likePost: (args: postIdArgs, req: authRequest) => Promise<boolean |
     try {
         const user = await User.findById(req.userId);
         const post = await Post.findById(postId).populate('user');
-        if (!user || !req.isAuth || !post || post?.user._id.toString() !== req.userId) {
+        if (!user || !req.isAuth || !post) {
             const error = new CustomError('Unauthorized');
             error.code = 401;
             throw error;
@@ -255,7 +255,7 @@ export const dislikePost: (args: postIdArgs, req: authRequest) => Promise<boolea
     try {
         const user = await User.findById(req.userId).populate('postsLiked');
         const post = await Post.findById(postId).populate('user');
-        if (!user || !req.isAuth || !post || post?.user._id.toString() !== req.userId) {
+        if (!user || !req.isAuth || !post) {
             const error = new CustomError('Unauthorized');
             error.code = 401;
             throw error;

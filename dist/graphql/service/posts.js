@@ -217,7 +217,7 @@ exports.likePost = async ({ postId }, req) => {
     try {
         const user = await User_1.default.findById(req.userId);
         const post = await Post_1.default.findById(postId).populate('user');
-        if (!user || !req.isAuth || !post || (post === null || post === void 0 ? void 0 : post.user._id.toString()) !== req.userId) {
+        if (!user || !req.isAuth || !post) {
             const error = new types_module_1.CustomError('Unauthorized');
             error.code = 401;
             throw error;
@@ -237,7 +237,7 @@ exports.dislikePost = async ({ postId }, req) => {
     try {
         const user = await User_1.default.findById(req.userId).populate('postsLiked');
         const post = await Post_1.default.findById(postId).populate('user');
-        if (!user || !req.isAuth || !post || (post === null || post === void 0 ? void 0 : post.user._id.toString()) !== req.userId) {
+        if (!user || !req.isAuth || !post) {
             const error = new types_module_1.CustomError('Unauthorized');
             error.code = 401;
             throw error;
